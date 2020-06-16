@@ -52,15 +52,17 @@
   "Merges adjacent tiles with the same values. Assumes there are no
   nils interleaved with values (i.e. row was already compacted)"
   [[a b & r]]
-  (cond
-    (or (nil? a) (nil? b)) (concat [a b] r)
-    (= a b) (-> (+ a b)
-                (list)
-                (concat (-sum-row (vec r)))
-                (concat (list nil))
-                (vec))
-    :else (-> (list a)
-              (concat (-sum-row (concat (list b) r))))))
+  (->> (cond
+         (or (nil? a) (nil? b)) (concat [a b] r)
+         (= a b) (-> (+ a b)
+                     (list)
+                     (concat (-sum-row (vec r)))
+                     (concat (list nil))
+                     (vec))
+         :else (-> (list a)
+                   (concat (-sum-row (concat (list b) r)))))
+       (take 4)
+       (vec)))
 
 (defn- -compact-row
   "Moves the tiles of the row to the left (towards the start)"
